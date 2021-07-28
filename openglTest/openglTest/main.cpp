@@ -1,6 +1,8 @@
-#include "glut.h"
+﻿#include "glut.h"
 #include "stdio.h"
 #include "iostream"
+#include <stdlib.h>
+#include <math.h>
 
 int point1[]{ 15,50 };
 int point2[]{ 25,30 };
@@ -11,7 +13,76 @@ int point6[]{ 90,60 };
 
 GLint points[8][3] = { {0,0,0},{0,1,0},{1,0,0},{1,1,0},{0,0,1},{0,1,1},{1,0,1},{1,1,1} };
 
+GLsizei winWidth = 400, winHeight = 400;
+GLuint regHex;
+const double TWO_PI = 6.2831853;
 
+class screenPt
+{
+private:
+    GLint x, y;
+public:
+    screenPt()
+    {
+        x = y = 0;
+    }
+
+    void setCoords(GLint xCoord, GLint yCoord)
+    {
+        x = xCoord;
+        y = yCoord;
+    }
+
+    GLint getx() const
+    {
+        return x;
+    }
+    GLint gety() const
+    {
+        return y;
+    }
+};
+
+static void
+init(void)
+{
+    screenPt hexVertex, circCtr;
+    GLdouble theta;
+    GLint k;
+    circCtr.setCoords(winWidth / 2, winHeight / 2);
+
+    glClearColor(1.0, 1.0, 1.0, 0.0);
+    regHex = glGenLists(1);
+    glNewList(regHex, GL_COMPILE);
+    glColor3f(1.0, 0.0, 0.0);
+    glBegin(GL_POLYGON);
+    for (k = 0; k < 6; k++) {
+        theta = TWO_PI * k / 6.0;
+        hexVertex.setCoords(circCtr.getx() + 150 * cos(theta),
+            circCtr.gety() + 150 * sin(theta));
+        glVertex2i(hexVertex.getx(), hexVertex.gety());
+    }
+    glEnd();
+    glEndList();
+}
+
+void
+regHexgon(void)
+{
+    glClear(GL_COLOR_BUFFER_BIT);
+    glCallList(regHex);
+    glFlush();
+}
+
+void
+winReshapeFcn(int newWidth,int newHeight)
+{
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(0.0, (GLdouble)newWidth, 0.0, (GLdouble)newHeight);
+
+    glClear(GL_COLOR_BUFFER_BIT);
+}
 
 void
 RenderScene(void)
@@ -34,7 +105,7 @@ RenderScene(void)
 }
 
 void
-quad(GLint n1,GLint n2,GLint n3,GLint n4)
+quad(GLint n1, GLint n2, GLint n3, GLint n4)
 {
     glBegin(GL_QUADS);
 
@@ -51,21 +122,28 @@ quad(GLint n1,GLint n2,GLint n3,GLint n4)
 void
 SetupRC(void)
 {
-    glClearColor(1.0f, 1.0f, 1.0f,0.0f);
+    glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
     glMatrixMode(GL_PROJECTION);
     gluOrtho2D(0.0, 200.0, 0.0, 150.0);
 }
 
 int
-main(int argc,char** argv)
+main(int argc, char** argv)
 {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA);
     glutInitWindowPosition(100, 200);
-    glutInitWindowSize(500, 500);
+    glutInitWindowSize(winWidth, winHeight);
     glutCreateWindow("Simple");
-    SetupRC();
-    glutDisplayFunc(RenderScene);
+
+    //SetupRC();
+    //glutDisplayFunc(RenderScene);
+    //glutMainLoop();
+
+    init();
+    glutDisplayFunc(regHexgon);
+    glutReshapeFunc(winReshapeFcn);
+
     glutMainLoop();
     return 0;
 }
