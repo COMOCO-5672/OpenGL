@@ -34,7 +34,7 @@ RenderScene(void)
 }
 
 void
-quad(GLint n1,GLint n2,GLint n3,GLint n4)
+quad(GLint n1, GLint n2, GLint n3, GLint n4)
 {
     glBegin(GL_QUADS);
 
@@ -51,21 +51,50 @@ quad(GLint n1,GLint n2,GLint n3,GLint n4)
 void
 SetupRC(void)
 {
-    glClearColor(1.0f, 1.0f, 1.0f,0.0f);
+    glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
     glMatrixMode(GL_PROJECTION);
     gluOrtho2D(0.0, 200.0, 0.0, 150.0);
 }
 
+#include <GLFW/glfw3.h>
+#include <glad/glad.h>
+
 int
-main(int argc,char** argv)
+main(int argc, char** argv)
 {
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA);
-    glutInitWindowPosition(100, 200);
-    glutInitWindowSize(500, 500);
-    glutCreateWindow("Simple");
-    SetupRC();
-    glutDisplayFunc(RenderScene);
-    glutMainLoop();
+    /* glutInit(&argc, argv);
+     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA);
+     glutInitWindowPosition(100, 200);
+     glutInitWindowSize(500, 500);
+     glutCreateWindow("Simple");
+     SetupRC();
+     glutDisplayFunc(RenderScene);
+     glutMainLoop();*/
+
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+
+    GLFWwindow* window = glfwCreateWindow(800, 600, "learnOpenGL", NULL, NULL);
+    if (window == NULL) {
+        std::cout << "Failed to create GLFW window" << std::endl;
+        glfwTerminate();
+        return -1;
+}
+    glfwMakeContextCurrent(window);
+
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        std::cout << "Failed to initialize GLAD" << std::endl;
+        return -1;
+    }
+    glViewport(0, 0, 800, 600);  // create view
+
+
+
     return 0;
 }
