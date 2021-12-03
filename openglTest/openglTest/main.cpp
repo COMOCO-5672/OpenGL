@@ -1,4 +1,7 @@
-﻿#include "glut.h"
+﻿
+#if 0
+
+#include "glut.h"
 #include "stdio.h"
 #include "iostream"
 #include <stdlib.h>
@@ -17,8 +20,7 @@ GLsizei winWidth = 400, winHeight = 400;
 GLuint regHex;
 const double TWO_PI = 6.2831853;
 
-class screenPt
-{
+class screenPt {
 private:
     GLint x, y;
 public:
@@ -59,7 +61,7 @@ init(void)
     for (k = 0; k < 6; k++) {
         theta = TWO_PI * k / 6.0;
         hexVertex.setCoords(circCtr.getx() + 150 * cos(theta),
-            circCtr.gety() + 150 * sin(theta));
+                            circCtr.gety() + 150 * sin(theta));
         glVertex2i(hexVertex.getx(), hexVertex.gety());
     }
     glEnd();
@@ -75,7 +77,7 @@ regHexgon(void)
 }
 
 void
-winReshapeFcn(int newWidth,int newHeight)
+winReshapeFcn(int newWidth, int newHeight)
 {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -127,21 +129,45 @@ SetupRC(void)
     gluOrtho2D(0.0, 200.0, 0.0, 150.0);
 }
 
-#include <GLFW/glfw3.h>
+int
+main(int argc, char** argv)
+{
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA);
+    glutInitWindowPosition(100, 200);
+    glutInitWindowSize(500, 500);
+    glutCreateWindow("Simple");
+    SetupRC();
+    glutDisplayFunc(RenderScene);
+    glutMainLoop();
+
+    return 0;
+}
+
+
+#endif 
+
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <iostream>
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+}
+
+void processInput(GLFWwindow* window)
+{
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        glfwSetWindowShouldClose(window, true);
+    }
+}
 
 int
 main(int argc, char** argv)
 {
-    /* glutInit(&argc, argv);
-     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA);
-     glutInitWindowPosition(100, 200);
-     glutInitWindowSize(500, 500);
-     glutCreateWindow("Simple");
-     SetupRC();
-     glutDisplayFunc(RenderScene);
-     glutMainLoop();*/
-
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -156,7 +182,7 @@ main(int argc, char** argv)
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return -1;
-}
+    }
     glfwMakeContextCurrent(window);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -165,7 +191,13 @@ main(int argc, char** argv)
     }
     glViewport(0, 0, 800, 600);  // create view
 
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    while (!glfwWindowShouldClose(window)) {
+        processInput(window);
 
-
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+    glfwTerminate();
     return 0;
 }
