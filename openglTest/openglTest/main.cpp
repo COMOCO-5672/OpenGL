@@ -177,7 +177,7 @@ const char *vertexShaderSource = "#version 330 core \n"
 "layout (location = 0) in vec3 aPos;\n"
 "void main()\n"
 "{\n"
-"   gl_Position = vec4(aPos.x, aPox.y, aPos.z, 1.0;\n)"
+"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
 "}\n";
 
 const char *fragmentShaderSource = "#version 330 core\n"
@@ -279,7 +279,7 @@ main(int argc, char** argv)
         glClear(GL_COLOR_BUFFER_BIT);
 
         // 当我们渲染一个物体是要用到的着色器程序
-        glUseProgram(shaderProgram); 
+        glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
