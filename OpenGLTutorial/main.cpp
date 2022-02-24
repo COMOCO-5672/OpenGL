@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    fileName = argv[1]+ " " + argv[2];
+    fileName = argv[1];
     videoWidth = atoi(argv[2]);
     videoHeight = atoi(argv[3]);
 
