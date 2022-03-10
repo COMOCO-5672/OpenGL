@@ -5,6 +5,8 @@
 #include <streambuf>
 #include <string>
 
+void framebuffer_size_callback(GLFWwindow* window,int width,int height);
+
 int main(int argc, char **argv)
 {
     std::ifstream vertexFile("./vertex_shader.vert",std::ios::in);
@@ -33,8 +35,19 @@ int main(int argc, char **argv)
     GLFWwindow* window = glfwCreateWindow(800,600,"learnOPENGL",NULL,NULL);
     if(window == nullptr)
     {
-        
+        std::cout << "create windows error" << std::endl;
+        glfwTerminate(); // destroy
+        return false;
     }
 
+    // bind window
+    glfwMakeContextCurrent(window);
+    glfwSetFramebufferSizeCallback(window,)
+
     return 0;
+}
+
+void framebuffer_size_callback(GLFWwindow* window,int width,int height)
+{
+    glViewport
 }
