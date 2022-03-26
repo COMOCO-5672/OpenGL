@@ -151,18 +151,6 @@ void init()
 
 void main()
 {
-    glm::mat4 trans(1.0f);
-    trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0, 1, 0));
-    //0  0  1  0
-    //0  1  0  0
-    //-1 0  0  0
-    //0  0  0  1
-    float *p = glm::value_ptr(trans);
-    std::cout << typeid(p).name() << std::endl;
-    for (int i = 0; i < 16; i++) {
-        std::cout << *p << ' ';
-        p++;
-    }
     glfwInit();
 
     m_pWindow = glfwCreateWindow(800, 600, "opengl application", nullptr, nullptr);
