@@ -1,0 +1,3 @@
+﻿  main.cpp
+D:\vsfile\1.github\OpenGL\freeglut-opengl\render\main.cpp(16,28): warning C4305: “参数”: 从“double”到“GLfloat”截断
+LINK : fatal error LNK1104: 无法打开文件“freeglutd.lib”
