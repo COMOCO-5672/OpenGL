@@ -7,7 +7,7 @@ init(void)
     glClearColor(1.0, 1.0, 1.0, 0.0);
 
     glMatrixMode(GL_PROJECTION);
-    gluOrtho2D(0.0, 180.0, 0.0, 180.0);
+    gluOrtho2D(0.0, 250.0, 0.0, 250.0);
 }
 
 void
@@ -22,10 +22,11 @@ lineSegment(void)
     glClear(GL_COLOR_BUFFER_BIT);
 
     glColor4f(1.0, 0.0, 0.0, 0.6);
-    glBegin(GL_LINES);
-    glVertex2i(180, -10);
-    glVertex2i(10, 180);
-    glEnd();
+    //glBegin(GL_POLYGON);
+    glRectf(0.0, 200.0, 200.0, 0.0);
+    /* glVertex2i(180, -10);
+     glVertex2i(10, 180);*/
+    //glEnd();
 
     glFlush();
 
