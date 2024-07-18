@@ -1,19 +1,27 @@
 #include <GL/freeglut.h>
 #include <string>
 
-#define M_PI 3.1415926
+void reshape(int width, int height);
+void keyboard(unsigned char key, int x, int y);
+void mouse(int button, int state, int x, int y);
+void motion(int x, int y);
 
-void DrawRoundedRect(float x, float y, float width, float height, float radius);
+float angleX = 0.0f;
+float angleY = 0.0f;
+float angleZ = 0.0f;
 
-void DrawText(const std::string &text, float x, float y);
+int lastMouseX;
+int lastMouseY;
+bool isDragging = false;
 
 void
 init(void)
 {
     glClearColor(1.0, 1.0, 1.0, 0.0);
 
-    glMatrixMode(GL_PROJECTION);
-    gluOrtho2D(0.0, 250.0, 0.0, 250.0);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void
@@ -24,119 +32,121 @@ RenderTimer(int value)
 
 void Display(void)
 {
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glColor4f(0.0, 0.0, 0.0, 0.3);
-    DrawRoundedRect(50.0 + 5.0, 50.0 - 5.0, 150.0, 100.0, 20.0);
-    glDisable(GL_BLEND);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 
-    glColor4f(1.0, 0.0, 0.0, 0.6);
-    DrawRoundedRect(50.0, 50.0, 150.0, 100.0, 20.0);
+    // 设置相机
+    gluLookAt(0.0, 0.0, 5.0,  // 相机位置
+        0.0, 0.0, 0.0,  // 观察点
+        0.0, 1.0, 0.0); // 上向量
 
-    glColor4f(0.0, 0.0, 0.0, 1.0);
-    DrawText("hello", 110.0, 90.0);
+    // 旋转立方体
+    glRotatef(angleX, 1.0, 0.0, 0.0);
+    glRotatef(angleY, 0.0, 1.0, 0.0);
+    glRotatef(angleZ, 0.0, 0.0, 1.0);
+    // 绘制立方体
+    //glColor4f(1.0, 0.0, 0.0, 0.6);
+    //glutSolidCube(1.0);
+
+    glBegin(GL_QUADS);
+    // 前面
+    glColor4f(1.0, 0.0, 0.0, 0.6); // 红色
+    glVertex3f(-0.5, -0.5, 0.5);
+    glVertex3f(0.5, -0.5, 0.5);
+    glVertex3f(0.5, 0.5, 0.5);
+    glVertex3f(-0.5, 0.5, 0.5);
+
+    // 背面
+    glColor4f(0.0, 1.0, 0.0, 0.6); // 绿色
+    glVertex3f(-0.5, -0.5, -0.5);
+    glVertex3f(0.5, -0.5, -0.5);
+    glVertex3f(0.5, 0.5, -0.5);
+    glVertex3f(-0.5, 0.5, -0.5);
+
+    // 左面
+    glColor4f(0.0, 0.0, 1.0, 0.6); // 蓝色
+    glVertex3f(-0.5, -0.5, -0.5);
+    glVertex3f(-0.5, -0.5, 0.5);
+    glVertex3f(-0.5, 0.5, 0.5);
+    glVertex3f(-0.5, 0.5, -0.5);
+
+    // 右面
+    glColor4f(1.0, 1.0, 0.0, 0.6); // 黄色
+    glVertex3f(0.5, -0.5, -0.5);
+    glVertex3f(0.5, -0.5, 0.5);
+    glVertex3f(0.5, 0.5, 0.5);
+    glVertex3f(0.5, 0.5, -0.5);
+
+    // 顶面
+    glColor4f(1.0, 0.0, 1.0, 0.6); // 洋红色
+    glVertex3f(-0.5, 0.5, 0.5);
+    glVertex3f(0.5, 0.5, 0.5);
+    glVertex3f(0.5, 0.5, -0.5);
+    glVertex3f(-0.5, 0.5, -0.5);
+
+    // 底面
+    glColor4f(0.0, 1.0, 1.0, 0.6); // 青色
+    glVertex3f(-0.5, -0.5, 0.5);
+    glVertex3f(0.5, -0.5, 0.5);
+    glVertex3f(0.5, -0.5, -0.5);
+    glVertex3f(-0.5, -0.5, -0.5);
+    glEnd();
 
     glFlush();
+    glutSwapBuffers();
 }
 
-void DrawRoundedRect(float x, float y, float width, float height, float radius)
+
+void reshape(int width, int height)
 {
-    float x1 = x;
-    float y1 = y;
-    float x2 = x + width;
-    float y2 = y + height;
-
-    glBegin(GL_QUADS);
-    glVertex2f(x1 + radius, y1);
-    glVertex2f(x2 - radius, y1);
-
-    glVertex2f(x2 - radius, y2);
-    glVertex2f(x1 + radius, y2);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex2f(x1, y1 + radius);
-    glVertex2f(x1 + radius, y1 + radius);
-
-    glVertex2f(x1 + radius, y2 - radius);
-    glVertex2f(x1, y2 - radius);
-    glEnd();
-
-    glBegin(GL_QUADS);
-    glVertex2f(x2, y1 + radius);
-    glVertex2f(x2 - radius, y1 + radius);
-
-    glVertex2f(x2 - radius, y2 - radius);
-    glVertex2f(x2, y2 - radius);
-    glEnd();
-
-    glBegin(GL_TRIANGLE_FAN);
-    glVertex2f(x1 + radius, y1 + radius);
-    for (int i = 0; i <= 100; ++i) {
-        glVertex2f(
-            x1 + radius + radius * cos(i * 2.0f * M_PI / 100),
-            y1 + radius + radius * sin(i * 2.0f * M_PI / 100)
-        );
-    }
-    glEnd();
-
-    glBegin(GL_TRIANGLE_FAN);
-    glVertex2f(x2 - radius, y1 + radius);
-    for (int i = 0; i <= 100; ++i) {
-        glVertex2f(
-            x2 - radius + radius * cos(i * 2.0f * M_PI / 100),
-            y1 + radius + radius * sin(i * 2.0f * M_PI / 100)
-        );
-    }
-    glEnd();
-
-    glBegin(GL_TRIANGLE_FAN);
-    glVertex2f(x1 + radius, y2 - radius);
-    for (int i = 0; i <= 100; ++i) {
-        glVertex2f(
-            x1 + radius + radius * cos(i * 2.0f * M_PI / 100),
-            y2 - radius + radius * sin(i * 2.0f * M_PI / 100)
-        );
-    }
-    glEnd();
-
-    glBegin(GL_TRIANGLE_FAN);
-    glVertex2f(x2 - radius, y2 - radius);
-    for (int i = 0; i <= 100; ++i) {
-        glVertex2f(
-            x2 - radius + radius * cos(i * 2.0f * M_PI / 100),
-            y2 - radius + radius * sin(i * 2.0f * M_PI / 100)
-        );
-    }
-    glEnd();
+    glViewport(0, 0, width, height);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(45.0, (GLfloat)width / (GLfloat)height, 1.0, 100.0);
 }
 
-void DrawText(const std::string& text, float x, float y)
+void keyboard(unsigned char key, int x, int y)
 {
-    glRasterPos2f(x, y);
-    for (char c : text)
+    switch (key) {
+    case 27:
+        exit(0);
+        break;
+    }
+}
+
+void mouse(int button, int state, int x, int y)
+{
+    if (button == GLUT_LEFT_BUTTON) {
+        if (state == GLUT_DOWN) {
+            isDragging = true;
+            lastMouseX = x;
+            lastMouseY = y;
+        }
+        else if (state == GLUT_UP) {
+            isDragging = false;
+        }
+    }
+}
+
+void motion(int x, int y)
+{
+    if (isDragging)
     {
-        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c);
+        int dx = x - lastMouseX;
+        int dy = y - lastMouseY;
+
+        angleX += dy * 0.5f;
+        angleY += dx * 0.5f;
+
+        lastMouseX = x;
+        lastMouseY = y;
+
+        glutPostRedisplay();
     }
 }
 
-void
-lineSegment(void)
-{
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    glColor4f(1.0, 0.0, 0.0, 0.6);
-    //glBegin(GL_POLYGON);
-    glRectf(0.0, 200.0, 200.0, 0.0);
-    /* glVertex2i(180, -10);
-     glVertex2i(10, 180);*/
-    //glEnd();
-
-    glFlush();
-
-}
 
 int main(int argc, char **argv)
 {
@@ -149,6 +159,11 @@ int main(int argc, char **argv)
     init();
     glutTimerFunc(1000, &RenderTimer, 60);
     glutDisplayFunc(Display);
+    glutReshapeFunc(reshape);
+    glutKeyboardFunc(keyboard);
+    glutMouseFunc(mouse);
+    glutMotionFunc(motion);
+
     glutMainLoop();
 
     return 0;
