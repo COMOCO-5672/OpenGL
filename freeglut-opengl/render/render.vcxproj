@@ -122,7 +122,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\OpenGL\freeglut-3.4.0\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\OpenGL\glm\glm;C:\OpenGL\glew-2.2.0-win32\include;C:\OpenGL\freeglut-3.4.0\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
@@ -130,8 +130,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\OpenGL\freeglut-3.4.0\lib\x64</AdditionalLibraryDirectories>
-      <AdditionalDependencies>freeglut_static.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\OpenGL\glew-2.2.0-win32\lib\Release\x64;C:\OpenGL\freeglut-3.4.0\lib\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freeglut_static.lib;glew32.lib;glew32s.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
